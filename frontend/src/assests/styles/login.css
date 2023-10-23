@@ -1,0 +1,10 @@
+.login-container {
+  max-width: 65%;
+}
+
+/* This is to ensure responsiveness on smaller screens */
+@media screen and (max-width: 767px) {
+  .login-container {
+    max-width: 100%;
+  }
+}
