@@ -41,6 +41,12 @@ const Dashboard = () => {
     setShowModal(true);
   };
 
+  const deleteBook = (index) => {
+    const updatedBooks = [...books];
+    updatedBooks.splice(index, 1);
+    setBooks(updatedBooks);
+  };
+
   const resetForm = () => {
     setNewBook({
       title: "",
@@ -57,7 +63,7 @@ const Dashboard = () => {
   return (
     <div>
       <Button onClick={() => setShowModal(true)} className="add-book">
-        Add Book
+        <i class="fa-solid fa-plus"></i> Add Book
       </Button>
       <div className="container-fluid mt-3">
         <div className="row">
@@ -73,7 +79,15 @@ const Dashboard = () => {
                   <p className="card-text">Published on: {book.publishYear}</p>
                   <p className="card-text">Edition: {book.edition}</p>
                   <p className="card-text">Price: ${book.price}</p>
-                  <Button onClick={() => editBook(index)}>Edit Book</Button>
+                  <div className="book-buttons">
+                    <Button onClick={() => editBook(index)}>Edit Book</Button>
+                    <Button
+                      onClick={() => deleteBook(index)}
+                      className="btn btn-danger"
+                    >
+                      Delete Book
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -144,7 +158,7 @@ const Dashboard = () => {
             Close
           </Button>
           <Button variant="primary" onClick={addOrUpdateBook}>
-            {isEditMode ? "Save Changes" : "Add Book"}
+            {isEditMode ? "Save Changes" : "Submit"}
           </Button>
         </Modal.Footer>
       </Modal>

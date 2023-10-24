@@ -30,6 +30,9 @@ function Register() {
         password: "",
         confirmPassword: "",
       });
+      users.map((user) => {
+        console.log("Registerd User is ", user);
+      });
     } else {
       console.log("Passwords do not match");
     }

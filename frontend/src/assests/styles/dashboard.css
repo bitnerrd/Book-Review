@@ -1,3 +1,7 @@
 .add-book {
   margin: 1rem;
 }
+.book-buttons{
+  display: flex;
+  justify-content:space-between;
+}
