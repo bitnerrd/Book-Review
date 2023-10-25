@@ -1,15 +1,18 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {  toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../src/assests/styles/login.css";
 
 function Register() {
+  const navigate = useNavigate();
+
   const [userData, setUserData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
-  const [users, setUsers] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -19,22 +22,32 @@ function Register() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (userData.password === userData.confirmPassword) {
-      setUsers((prevUsers) => [...prevUsers, userData]);
-      console.log("User registered:", userData);
-      setUserData({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
+    const userRegistrationData = {
+      name: userData.username,
+      email: userData.email,
+      password: userData.password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3003/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userRegistrationData),
       });
-      users.map((user) => {
-        console.log("Registerd User is ", user);
-      });
-    } else {
-      console.log("Passwords do not match");
+      const data = await response.json();
+
+      if (data.status) {
+        toast.success("User registered successfully"); 
+        navigate("/user/login");
+      } else {
+        toast.error(data.message || "Unexpected error");
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong. Please try again."); // Show error toast
     }
   };
 
