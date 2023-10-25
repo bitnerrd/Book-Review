@@ -1,24 +1,54 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
+require('dotenv').config();
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        validate(value) {
+            if (validator.isEmpty(value)) {
+                throw new Error("Name cannot be empty");
+            }
+        }
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        match: [/.+\@.+\..+/, 'Enter a valid email address']
+        trim: true,
+        validate(value) {
+            if (validator.isEmpty(value)) {
+                throw new Error("Email cannot be empty");
+            }
+        }
     },
     password: {
         type: String,
         required: true,
-        minlength: [6, 'Password must be at least 6 characters long']
-    }
+        trim: true,
+        validate(value) {
+            if (validator.isEmpty(value)) {
+                throw new Error("Password cannot be empty");
+            }
+        },
+        minlength: [2, 'Password must be at least 6 characters long']
+    },
+}, {
+    timestamps: true,
 });
 
-const User = mongoose.model('User', UserSchema);
+
+UserSchema.pre("save", async function (next) {
+    const user = this;
+    if (user.isModified("password")) {
+        user.password = await bcrypt.hash(user.password, 8);
+    }
+    next();
+});
+
+const User = mongoose.model("User", UserSchema);
 
 module.exports = User;

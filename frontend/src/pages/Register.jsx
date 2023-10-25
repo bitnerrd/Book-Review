@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../src/assests/styles/login.css";
 
@@ -28,6 +28,7 @@ function Register() {
       name: userData.username,
       email: userData.email,
       password: userData.password,
+      confirmPassword: userData.confirmPassword,
     };
 
     try {
@@ -41,13 +42,13 @@ function Register() {
       const data = await response.json();
 
       if (data.status) {
-        toast.success("User registered successfully"); 
+        toast.success(data.message);
         navigate("/user/login");
       } else {
         toast.error(data.message || "Unexpected error");
       }
     } catch (error) {
-      toast.error(error.message || "Something went wrong. Please try again."); // Show error toast
+      toast.error(error.message || "Something went wrong. Please try again.");
     }
   };
 
