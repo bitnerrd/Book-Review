@@ -21,9 +21,13 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use(logger('combined'));
+// const logf = ':method :url :date[web]';
+const logf = ':remote-addr - :method :url :status :response-time ms - :date[web]';
 
-app.use("/user", require("./src/controllers/users"))
+app.use(logger(logf));
+
+app.use("/user", require("./src/routes/users"))
+app.use("/book", require("./src/routes/books"))
 
 const port = process.env.PORT || 3003;
 app.listen(port, console.log(`Server is up on ${port}`));

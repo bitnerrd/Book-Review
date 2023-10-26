@@ -1,44 +1,31 @@
 import React, { useState } from "react";
-import "../../src/assests/styles/login.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const navigate = useNavigate();
-
-  const [userData, setUserData] = useState({
-    email: "",
-    password: "",
-  });
+  const [userData, setUserData] = useState({ email: "", password: "" });
   const { email, password } = userData;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setUserData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const userLoginData = {
-      email,
-      password,
-    };
-
     try {
       const response = await fetch("http://localhost:3003/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userLoginData),
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-
       if (data.status) {
+        localStorage.setItem("authorization", data.data.token);
         toast.success(data.message);
         navigate("/dashboard");
       } else {
@@ -59,12 +46,10 @@ function Login() {
             alt="Phone image"
           />
         </div>
-
         <div className="col-12 col-md-6">
           <h1 className="login" style={{ textAlign: "center" }}>
-            {/* Login {email} {password} */} Login
+            Login
           </h1>
-
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-4">
               <label htmlFor="email">Email</label>
@@ -77,7 +62,6 @@ function Login() {
                 onChange={handleChange}
               />
             </div>
-
             <div className="form-group mb-4">
               <label htmlFor="password">Password</label>
               <input
@@ -89,7 +73,6 @@ function Login() {
                 onChange={handleChange}
               />
             </div>
-
             <button className="btn btn-primary mb-4 w-100 btn-lg" type="submit">
               Sign In
             </button>

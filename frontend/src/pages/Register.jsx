@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../src/assests/styles/login.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function Register() {
   const navigate = useNavigate();
@@ -32,10 +33,12 @@ function Register() {
     };
 
     try {
+      // const token = localStorage.getItem("authorization");
       const response = await fetch("http://localhost:3003/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(userRegistrationData),
       });
@@ -115,6 +118,48 @@ function Register() {
                 onChange={handleChange}
               />
             </div>
+            {/* <div className="form-group mb-4">
+              <label htmlFor="gender">Gender</label>
+              <select
+                id="gender"
+                name="gender"
+                className="form-control form-control-lg"
+                value={userData.gender}
+                onChange={handleChange}
+              >
+                <option value="" disabled>
+                  Select your gender
+                </option>
+                <option value="male">
+                  <FontAwesomeIcon icon="fa-solid fa-person" /> Male
+                </option>
+                <option value="female"> Female</option>
+                <option value="other">🟢 Other</option>
+              </select>
+            </div> */}
+            {/* <div class="dropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenu2"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Dropdown
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button">
+                  Action
+                </button>
+                <button class="dropdown-item" type="button">
+                  Another action
+                </button>
+                <button class="dropdown-item" type="button">
+                  Something else here
+                </button>
+              </div>
+            </div> */}
 
             <button className="btn btn-primary mb-4 w-100 btn-lg" type="submit">
               Register
