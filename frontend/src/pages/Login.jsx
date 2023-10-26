@@ -1,7 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import "../../src/assests/styles/login.css";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+  const { email, password } = userData;
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const userLoginData = {
+      email,
+      password,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3003/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userLoginData),
+      });
+      const data = await response.json();
+
+      if (data.status) {
+        toast.success(data.message);
+        navigate("/dashboard");
+      } else {
+        toast.error(data.message || "Unexpected error");
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong. Please try again.");
+    }
+  };
+
   return (
     <div className="container-fluid p-3 my-5 d-flex justify-content-center">
       <div className="login-container row w-100 justify-content-center">
@@ -15,32 +62,38 @@ function Login() {
 
         <div className="col-12 col-md-6">
           <h1 className="login" style={{ textAlign: "center" }}>
-            Login
+            {/* Login {email} {password} */} Login
           </h1>
 
-          <div className="form-group mb-4">
-            <label htmlFor="formControlLg">Email address</label>
-            <input
-              type="email"
-              className="form-control form-control-lg"
-              id="formControlLg"
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group mb-4">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                className="form-control form-control-lg"
+                id="email"
+                name="email"
+                value={userData.email}
+                onChange={handleChange}
+              />
+            </div>
 
-          <div className="form-group mb-4">
-            <label htmlFor="formControlLg">Password</label>
-            <input
-              type="password"
-              className="form-control form-control-lg"
-              id="formControlLg"
-            />
-          </div>
+            <div className="form-group mb-4">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                className="form-control form-control-lg"
+                id="password"
+                name="password"
+                value={userData.password}
+                onChange={handleChange}
+              />
+            </div>
 
-          <div className="d-flex justify-content-between mx-4 mb-4">
-            <a href="!#">Forgot password?</a>
-          </div>
-
-          <button className="btn btn-primary mb-4 w-100 btn-lg">Sign in</button>
+            <button className="btn btn-primary mb-4 w-100 btn-lg" type="submit">
+              Sign In
+            </button>
+          </form>
         </div>
       </div>
     </div>
