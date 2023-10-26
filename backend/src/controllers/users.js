@@ -4,10 +4,13 @@ const User = require("../models/users/User")
 const log = console.log;
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
+const { auth } = require("../middlewares/auth")
 // const { body, validationResult } = require('express-validator');
 
 app.post('/register', async (req, res) => {
     try {
+        console.log(req.user)
+
         const { name, email, password, confirmPassword } = req.body;
         if (!email || !password || !name || !confirmPassword) {
             return res.status(401).send({ message: "Fill in all fields.", status: false })
@@ -52,9 +55,9 @@ app.post('/login', async (req, res) => {
     if (!isMatch) {
         throw new Error("Unable to login, Please enter correct password");
     }
-    const token = jwt.sign
-    return res.status(200).send({ message: "LogedIn!", status: true })
-
+    const token = jwt.sign({ _id: user?._id.toString() }, process.env.token_key)
+    return res.status(200).json({ message: "LogedIn!", status: true, data: { token } });
+    // return res.status(200).json({ message: "LogedIn!", status: true, data: { token } });
 
 })
 
