@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use(logger('combined'));
 
-app.use("/user", require("./src/controllers/users"))
+app.use("/user", require("./src/routes/users"))
 
 const port = process.env.PORT || 3003;
 app.listen(port, console.log(`Server is up on ${port}`));
