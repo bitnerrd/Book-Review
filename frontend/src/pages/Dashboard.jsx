@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import "../assests/styles/dashboard.css";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newBook, setNewBook] = useState({
@@ -15,6 +19,37 @@ const Dashboard = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedBookIndex, setSelectedBookIndex] = useState(null);
 
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const token = localStorage.getItem("authorization");
+        if (!token) {
+          navigate("/user/login");
+          toast.error("Login to access the resource!");
+        } else {
+          const response = await fetch("http://localhost:3003/book/all", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await response.json();
+          if (data.status === true && data.data) {
+            setBooks(data.data);
+          } else if (data.status === false) {
+            navigate("/user/login");
+            toast.error(data.message);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewBook((prevBook) => ({
@@ -23,29 +58,40 @@ const Dashboard = () => {
     }));
   };
 
-  const addOrUpdateBook = () => {
-    if (isEditMode) {
-      const updatedBooks = [...books];
-      updatedBooks[selectedBookIndex] = newBook;
-      setBooks(updatedBooks);
-    } else {
-      setBooks([...books, newBook]);
+  const addOrUpdateBook = async () => {
+    try {
+      const token = localStorage.getItem("authorization");
+      if (!token) {
+        toast.error("Authorization Failed");
+        navigate("/user/login");
+      }
+      const response = await fetch("http://localhost:3003/book/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newBook),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+        setBooks([...books, newBook]);
+        toast.success(data.message);
+        resetForm();
+      } else {
+        toast.error(data.message || "Error adding book!");
+      }
+    } catch (error) {
+      console.error("Error adding/updating book:", error);
+      toast.error("Error adding/updating book!");
     }
-    resetForm();
   };
 
-  const editBook = (index) => {
-    setSelectedBookIndex(index);
-    setNewBook(books[index]);
-    setIsEditMode(true);
-    setShowModal(true);
-  };
+  const editBook = () => {};
 
-  const deleteBook = (index) => {
-    const updatedBooks = [...books];
-    updatedBooks.splice(index, 1);
-    setBooks(updatedBooks);
-  };
+  const deleteBook = (index) => {};
 
   const resetForm = () => {
     setNewBook({
