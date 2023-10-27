@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express.Router();
 const User = require("../models/users/User");
+const Book = require("../models/book/Book")
 const log = console.log;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -39,7 +40,12 @@ app.post("/register", async (req, res) => {
             email: email,
             password: password,
         });
-        await newUser.save();
+        const user = await newUser.save();
+        const book = new Book({
+            user: user._id
+        })
+        await book.save();
+
         return res
             .status(201)
             .send({ message: "Registerd! You can login.", status: true });
@@ -80,5 +86,9 @@ app.post("/login", async (req, res) => {
         .json({ message: "LogedIn!", status: true, data: { token } });
     // return res.status(200).json({ message: "LogedIn!", status: true, data: { token } });
 });
+
+app.get("/logout", (req, res)=>{
+    
+})
 
 module.exports = app;

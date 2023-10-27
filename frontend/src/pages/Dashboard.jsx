@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Form,
+  Container,
+  Card,
+  Row,
+  Col,
+} from "react-bootstrap";
 import "../assests/styles/dashboard.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -114,8 +122,8 @@ const Dashboard = () => {
       <div className="container-fluid mt-3">
         <div className="row">
           {books.map((book, index) => (
-            <div key={index} className="col-12 col-md-6 col-lg-4 mb-4">
-              <div className="card">
+            <div key={index} className="py-3">
+              {/* <div className="card">
                 <div
                   className="card-body"
                   style={{ backgroundColor: "#F4F5FF" }}
@@ -135,7 +143,42 @@ const Dashboard = () => {
                     </Button>
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <Card>
+                <Row>
+                  <Col md={7} className="px-3">
+                    <Card.Body className="px-6">
+                      <Card.Title>{book.title}</Card.Title>
+                      <Card.Text>
+                        by: {book.author}, Published on: {book.publishYear},
+                        Edition: {book.edition}, Price: ${book.price}{" "}
+                      </Card.Text>
+                      <Card.Text>
+                        Made for usage, commonly searched for. Fork, like and
+                        use it. Just move the carousel div above the col
+                        containing the text for left alignment of images
+                      </Card.Text>
+                      <div className="book-buttons">
+                        <Button onClick={() => editBook(index)}>
+                          Edit Book
+                        </Button>
+                        <Button
+                          onClick={() => deleteBook(index)}
+                          className="btn btn-danger"
+                        >
+                          Delete Book
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Col>
+                  <Col md={5}>
+                    <Card.Img
+                      variant="top"
+                      src="https://picsum.photos/450/300?image=1072"
+                    />
+                  </Col>
+                </Row>
+              </Card>
             </div>
           ))}
         </div>
