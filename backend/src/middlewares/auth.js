@@ -11,6 +11,7 @@ const auth = async (req, res, next) => {
         }
         const decoded = jwt.verify(token, process.env.token_key);
         req.user = decoded;
+        console.log(req.user)
         next();
     } catch (error) {
         return res.status(401).json({ message: "Authentication failed, try login again!", status: false });

@@ -1,0 +1,5 @@
+.navbar-logo {
+  width: 70px; /* or any desired width */
+  height: auto; /* maintain the aspect ratio */
+  max-height: 40px; /* set a maximum height if necessary */
+}

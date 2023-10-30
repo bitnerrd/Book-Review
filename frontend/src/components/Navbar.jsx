@@ -1,14 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import navlogo from "../assests/images/navbarlogo.jpg";
+import "../assests/styles/navbar.css";
 
 const Navbar = () => {
   const [showNav, setShowNav] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in when component mounts
+    const token = localStorage.getItem("authorization");
+    if (token) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-          BookReview
+          <img src={navlogo} alt="BookReview" className="navbar-logo" />
         </Link>
         <button
           className="navbar-toggler"
@@ -27,30 +40,44 @@ const Navbar = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/">
                 Home
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/user/login">
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/user/register">
-                Register
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/dashboard" tabIndex="-1">
-                Dashboard
-              </Link>
-            </li>
+            </li> */}
+            {!loggedIn && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/user/login">
+                    Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/user/register">
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
+            {loggedIn && (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/dashboard" tabIndex="-1">
+                    Dashboard
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/logout">
+                    Logout
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
     </nav>
   );
 };
+
 export default Navbar;
